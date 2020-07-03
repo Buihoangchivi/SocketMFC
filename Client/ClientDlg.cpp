@@ -195,11 +195,25 @@ void CClientDlg::OnBnClickedUpload()
 	string s = (string)str_msg;
 	clientLog.AddString(convertCharToCString(s.c_str()));
 
-	ctr.SendFile(sk, convertCStringToChar(uploadname));
+	//ctr.SendFile(sk, convertCStringToChar(uploadname));
+	if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
+	{
 
-	sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+		sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+		
+
+	}
+	else
+	{
+
+		sprintf(str_msg, "Uploading %s failed", convertCStringToChar(uploadname));
+
+	}
 	s = (string)str_msg;
 	clientLog.AddString(convertCharToCString(s.c_str()));
+	/*sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+	s = (string)str_msg;
+	clientLog.AddString(convertCharToCString(s.c_str()));*/
 
 }
 

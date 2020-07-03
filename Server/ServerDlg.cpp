@@ -203,7 +203,8 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		if (strcmp("upload-file", msg->action) == 0)
 		{
 
-			control.CreateForWriting(socket, msg->content);
+			//control.CreateForWriting(socket, msg->content);
+			control.CreateForWriting();
 
 		}
 		if (strcmp("upload-file-part", msg->action) == 0)

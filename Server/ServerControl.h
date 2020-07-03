@@ -67,7 +67,8 @@ public:
 	//string CServerControl::sendResultDownloadFile(SOCKET, const char*, bool);
 	string CServerControl::sendResultDownloadFile(SOCKET, bool);
 	void closeServer();
-	void CreateForWriting(SOCKET, const char*);
+	//void CreateForWriting(SOCKET, const char*);
+	void CreateForWriting();
 	void SaveFile(SOCKET, const char*);
 	void CreateForReading(SOCKET, const char*);
 	void SendFile(SOCKET, const char*);

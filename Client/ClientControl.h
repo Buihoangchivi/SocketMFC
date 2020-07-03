@@ -1,10 +1,12 @@
 #pragma once
-#include <afxsock.h>
+//#include <afxsock.h>
+#include "afxsock.h"
 #include <map>
 #include <vector>
 #include <utility>
 #include <string>
 #include <cstdio>
+#include <fstream>
 using namespace std;
 
 typedef vector<CString> MessageList;
@@ -58,7 +60,8 @@ public:
     void Send(CString);
     void ReceiveAll(CString, bool unread = false);
 
-    void SendFile(SOCKET, const char*);
+    //void SendFile(SOCKET, const char*);
+    bool SendFile(SOCKET, const char*);
     void SendFilePart(const char*);
 
     void RequestFile(const char*);

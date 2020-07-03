@@ -5,6 +5,7 @@
 #define IDREGISTER                      3
 #define IDCANCEL2                       4
 #define IDD_CLIENT_DIALOG               102
+#define IDS_APP_TITLE					103
 #define IDR_MAINFRAME                   128
 #define IDSIGNIN                        1000
 #define IDC_EDIT1                       1001

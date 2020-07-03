@@ -277,13 +277,70 @@ void CServerControl::closeServer()
 
 }
 
-void CServerControl::CreateForWriting(SOCKET socket, const char* rawname)
+//void CServerControl::CreateForWriting(SOCKET socket, const char* rawname)
+void CServerControl::CreateForWriting()
 {
 
-	string filename(rawname);
+	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
+	CSocket server;
+	unsigned int port = 5678;
+	AfxSocketInit(NULL);
+
+	server.Create(port);
+	server.Listen(5);
+	
+
+	CSocket sk;
+
+	server.Accept(sk);
+
+	//memcpy((char*)&sk, r, sizeof CSocket);
+	int nameLength = 0;
+	sk.Receive((char*)&nameLength, sizeof(nameLength), 0);
+	char* filename;
+	filename = new char[nameLength];
+	sk.Receive((char*)filename, nameLength, 0);
+	filename[nameLength] = '\0';
+	ofstream f;
+	f.open(filename, ios::out | ios::binary);
+	int end = 0;
+	while (true)
+	{
+		
+		sk.Receive((char*)&end, sizeof(end), 0);
+		if (end == 1)
+		{
+
+			break;
+			
+		}
+		int length = 0;
+		sk.Receive((char*)&length, sizeof(length), 0);
+		char* buff;
+		buff = new char[length];
+		sk.Receive((char*)buff, length, 0);
+		/*for (int i = 0; i < length; i++)
+			if (buff[i] == -51)
+			{
+
+				length = i;
+				break;
+
+			}*/
+		f.write(buff, length);
+		ZeroMemory(buff, length);
+
+	}
+	f.close();
+	sk.ShutDown(2); //Ngat ca chieu Gui va Nhan
+	sk.Close();
+	server.Close();
+	//return true;
+
+	/*string filename(rawname);
 	FILE* f = _wfopen(convertCharToCString(rawname), convertCharToCString("wb"));
 	fileWriter[filename] = f;
-	sendTo(socket, message("upload-file-response", rawname));
+	sendTo(socket, message("upload-file-response", rawname));*/
 
 }
 
