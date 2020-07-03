@@ -39,7 +39,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-	char str_msg[50];
+	char str_msg[200];
 	bool isConnected;
 	SOCKET sk;
 	SOCKADDR_IN serverAddress;

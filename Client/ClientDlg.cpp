@@ -175,7 +175,9 @@ void CClientDlg::OnBnClickedDownload()
 
 	CString uploadname;
 	GetDlgItemText(IDC_EDIT3, uploadname);
+	SOCKET temp = sk;
 	sprintf(str_msg, "Downloading %s", convertCStringToChar(uploadname));
+	sk = temp;
 	string s = (string)str_msg;
 	clientLog.AddString(convertCharToCString(s.c_str()));
 
@@ -209,7 +211,9 @@ void CClientDlg::OnBnClickedUpload()
 	
 	CString uploadname;
 	GetDlgItemText(IDC_EDIT3, uploadname);
+	SOCKET temp = sk;
 	sprintf(str_msg, "Uploading %s", convertCStringToChar(uploadname));
+	sk = temp;
 	string s = (string)str_msg;
 	clientLog.AddString(convertCharToCString(s.c_str()));
 
