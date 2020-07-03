@@ -151,7 +151,7 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		if (strcmp("download-file", msg->action) == 0)
 		{
 
-			control.CreateForReading();
+			control.DownFile();
 
 		//	char fileName[100];
 		//	strcpy(fileName, msg->content);
@@ -206,7 +206,7 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		{
 
 			//control.CreateForWriting(socket, msg->content);
-			control.CreateForWriting();
+			control.UpFile();
 
 		}
 		if (strcmp("upload-file-part", msg->action) == 0)

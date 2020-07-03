@@ -278,7 +278,7 @@ void CServerControl::closeServer()
 }
 
 //void CServerControl::CreateForWriting(SOCKET socket, const char* rawname)
-void CServerControl::CreateForWriting()
+void CServerControl::UpFile()
 {
 
 	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
@@ -319,14 +319,7 @@ void CServerControl::CreateForWriting()
 		char* buff;
 		buff = new char[length];
 		sk.Receive((char*)buff, length, 0);
-		/*for (int i = 0; i < length; i++)
-			if (buff[i] == -51)
-			{
-
-				length = i;
-				break;
-
-			}*/
+		
 		f.write(buff, length);
 		ZeroMemory(buff, length);
 
@@ -344,7 +337,7 @@ void CServerControl::CreateForWriting()
 
 }
 
-bool CServerControl::CreateForReading()
+bool CServerControl::DownFile()
 {
 
 	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
@@ -386,6 +379,19 @@ bool CServerControl::CreateForReading()
 		//cout << buff;
 		sk.Send(&end, sizeof(int), 0);
 		length = 4096;
+		if (f.eof())
+		{
+
+			for (int i = length - 1; i >= 0; i--)
+				if (buff[i] != -51)
+				{
+
+					length = i + 1;
+					break;
+
+				}
+
+		}
 		sk.Send(&length, sizeof(int), 0);
 		byte = sk.Send(buff, length, 0);
 		/*if (byte <= 0)

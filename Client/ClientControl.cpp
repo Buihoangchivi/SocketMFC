@@ -224,6 +224,19 @@ bool CClientControl::SendFile(SOCKET socket, const char* path)
 		f.read(buff, 4096);
 		client.Send(&end, sizeof(int), 0);
 		length = 4096;
+		if (f.eof())
+		{
+
+			for (int i = length - 1; i >= 0; i--)
+				if (buff[i] != -51)
+				{
+
+					length = i + 1;
+					break;
+
+				}
+
+		}
 		client.Send(&length, sizeof(int), 0);
 		byte = client.Send(buff, length, 0);
 		//if (byte <= 0)

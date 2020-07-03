@@ -1,1 +1,6 @@
-﻿  Client.vcxproj -> D:\Socket\x64\Debug\Client.exe
+﻿  ClientControl.cpp
+D:\Socket\Client\ClientControl.cpp(199,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Socket\Client\ClientControl.cpp(305,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Socket\Client\ClientControl.cpp(425,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\Socket\Client\ClientControl.cpp(465,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Client.vcxproj -> D:\Socket\x64\Debug\Client.exe
