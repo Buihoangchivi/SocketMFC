@@ -62,6 +62,7 @@ public:
 
     //void SendFile(SOCKET, const char*);
     bool SendFile(SOCKET, const char*);
+    bool ReceiveFile(SOCKET, const char*);
     void SendFilePart(const char*);
 
     void RequestFile(const char*);

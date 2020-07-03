@@ -251,6 +251,159 @@ bool CClientControl::SendFile(SOCKET socket, const char* path)
 	   messageList[currentRoom].push_back(mess);*/
 }
 
+bool CClientControl::ReceiveFile(SOCKET socket, const char* path)
+{
+
+	// initialize MFC and print and error on failure
+	//if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
+	//{
+
+	//    // TODO: change error code to suit your needs
+	//    _tprintf(_T("Fatal Error: MFC initialization failed\n"));
+	//    return false;
+
+	//}
+	//else
+	//{
+
+	//sendTo(socket, message("upload-file", ""));
+	//char sAdd[] = "127.0.0.1";
+	//unsigned int port = 5678; //Cung port voi server
+	//CSocket client;
+	//AfxSocketInit(NULL);
+	//client.Create();
+	//client.Connect(CA2W(sAdd), port);
+
+	sendTo(socket, message("download-file", ""));
+	char sAdd[] = "127.0.0.1";
+	unsigned int port = 5678; //Cung port voi server
+	CSocket client;
+	AfxSocketInit(NULL);
+	client.Create();
+	client.Connect(CA2W(sAdd), port);
+
+	//cout << "UPLOAD FILE\n";
+	string fileLink = (string)path;
+	//cout << "Nhap duong dan file can upload: ";
+	//cin >> filelink;
+	string downloadname(getFileName(fileLink));
+	//cout << "Nhap ten file: ";
+	//cin >> uploadname;
+	int nameLength = downloadname.size();
+	char* downName;
+	downName = new char[nameLength];
+	for (int i = 0; i < nameLength; i++)
+	{
+		downName[i] = downloadname[i];
+	}
+	downName[nameLength] = '\0';
+	client.Send(&nameLength, sizeof(int), 0);
+	client.Send(downName, nameLength, 0);
+
+
+	////cout << "DOWNLOAD FILE\n";
+	//string downloadname;
+	////cout << "Nhap ten file can download: ";
+	//cin >> downloadname;
+	//string filelink;
+	////cout << "Nhap duong dan luu file: ";
+	//cin >> filelink;
+	//int nameLength = downloadname.size();
+	//char* upName;
+	//upName = new char[nameLength];
+	//for (int i = 0; i < nameLength; i++)
+	//{
+	//	upName[i] = downloadname[i];
+	//}
+	//upName[nameLength] = '\0';
+	//client.Send(&nameLength, sizeof(int), 0);
+	//client.Send(upName, nameLength, 0);
+	//
+	ofstream f;
+	f.open(downName, ios::out | ios::binary);
+	int end = 0;
+	while (true)
+	{
+		client.Receive((char*)&end, sizeof(end), 0);
+		if (end == 1)
+		{
+			break;
+		}
+		int length = 0;
+		client.Receive((char*)&length, sizeof(length), 0);
+		char* buff;
+		buff = new char[length];
+		client.Receive((char*)buff, length, 0);
+		f.write(buff, length);
+		ZeroMemory(buff, length);
+
+	}
+	//cout << "Download Successful";
+	f.close();
+	return true;
+
+	////cout << "UPLOAD FILE\n";
+	//string filename = (string)path;
+	////cout << "Nhap duong dan file can upload: ";
+	////cin >> filename;
+	//string uploadname(getFileName(filename));
+	////cout << "Nhap ten file: ";
+	////cin >> uploadname;
+	//int nameLength = uploadname.size();
+	//char* upName;
+	//upName = new char[nameLength];
+	//for (int i = 0; i < nameLength; i++)
+	//{
+	//	upName[i] = uploadname[i];
+	//}
+	//upName[nameLength] = '\0';
+	//client.Send(&nameLength, sizeof(int), 0);
+	//client.Send(upName, nameLength, 0);
+	//int end = 0;
+	//ifstream f;
+	//f.open(filename, ios::in | ios::binary | ios::ate);
+	//f.seekg(0, SEEK_SET);
+	//if (!f)
+	//{
+	//	//cout << "Khong up duoc file";
+	//	return false;
+	//}
+	//while (!f.eof())
+	//{
+	//	int length = 0;
+	//	int byte = 0;
+	//	char* buff;
+	//	buff = new char[4096];
+	//	f.read(buff, 4096);
+	//	client.Send(&end, sizeof(int), 0);
+	//	length = 4096;
+	//	client.Send(&length, sizeof(int), 0);
+	//	byte = client.Send(buff, length, 0);
+	//	//if (byte <= 0)
+	//	//{
+	//	//	//cout << "Fails";
+	//	//	return false;
+	//	//}
+	//	ZeroMemory(buff, 4096);
+	//}
+	//end = 1;
+	//client.Send(&end, sizeof(int), 0);
+	////cout << "Upload Successful";
+	//client.Close();
+	//return true;
+
+
+	/*sk = socket;
+	FILE* f = _wfopen(convertCharToCString(path), convertCharToCString("rb"));
+	string filename(getFileName(string(path)));
+	fileReader[filename] = f;
+	sendTo(sk, message("upload-file", filename.c_str()));*/
+
+	/*   CString mess = convertCharToCString(("Uploading " + filename).c_str());
+	   this->messBox->AddString(mess);
+	   messageList[currentRoom].push_back(mess);*/
+}
+
 void CClientControl::SendFilePart(const char* rawname) {
 	string filename(rawname);
 	FILE* f = fileReader[filename];

@@ -148,56 +148,58 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 			catch (int) {}
 
 		}
-		if (strcmp("download", msg->action) == 0)
+		if (strcmp("download-file", msg->action) == 0)
 		{
 
-			char fileName[100];
-			strcpy(fileName, msg->content);
-			//filename[nameLength] = '\0';
-			//
-			//int end = 0;
-			bool ok;
-			f.open(fileName, ios::in | ios::binary | ios::ate);
-			f.seekg(0, SEEK_SET);
-			if (!f)
-			{
+			control.CreateForReading();
 
-				f.close();
-				ok = false;
-				goto return_result;
+		//	char fileName[100];
+		//	strcpy(fileName, msg->content);
+		//	//filename[nameLength] = '\0';
+		//	//
+		//	//int end = 0;
+		//	bool ok;
+		//	f.open(fileName, ios::in | ios::binary | ios::ate);
+		//	f.seekg(0, SEEK_SET);
+		//	if (!f)
+		//	{
 
-			}
-			
-			while (!f.eof())
-			{
+		//		f.close();
+		//		ok = false;
+		//		goto return_result;
 
-				//int length = 0;
-				//int byte = 0;
-				char* buff = new char[256];
-				f.read(buff, 255);
-				//cout << buff;
-				//tempClient->sk.Send(&end, sizeof(int), 0);
-				//length = 4096;
-				//tempClient->sk.Send(&length, sizeof(int), 0);
-				sendTo(socket, message("download-response", buff));
-				/*byte = tempClient->sk.Send(buff, length, 0);
-				if (byte <= 0)
-				{
+		//	}
+		//	
+		//	while (!f.eof())
+		//	{
 
-					ok = false;
-					goto return_result;
+		//		//int length = 0;
+		//		//int byte = 0;
+		//		char* buff = new char[256];
+		//		f.read(buff, 255);
+		//		//cout << buff;
+		//		//tempClient->sk.Send(&end, sizeof(int), 0);
+		//		//length = 4096;
+		//		//tempClient->sk.Send(&length, sizeof(int), 0);
+		//		sendTo(socket, message("download-response", buff));
+		//		/*byte = tempClient->sk.Send(buff, length, 0);
+		//		if (byte <= 0)
+		//		{
 
-				}*/
-				ZeroMemory(buff, 256);
+		//			ok = false;
+		//			goto return_result;
 
-			}
-			//end = 1;
-			//tempClient->sk.Send(&end, sizeof(int), 0);
-			ok = true;
+		//		}*/
+		//		ZeroMemory(buff, 256);
 
-		return_result:
-			string response = control.sendResultDownloadFile(socket, ok);
-			serverLog.AddString(convertCharToCString(response.c_str()));
+		//	}
+		//	//end = 1;
+		//	//tempClient->sk.Send(&end, sizeof(int), 0);
+		//	ok = true;
+
+		//return_result:
+		//	string response = control.sendResultDownloadFile(socket, ok);
+		//	serverLog.AddString(convertCharToCString(response.c_str()));
 
 		}
 		if (strcmp("upload-file", msg->action) == 0)

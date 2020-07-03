@@ -344,6 +344,70 @@ void CServerControl::CreateForWriting()
 
 }
 
+bool CServerControl::CreateForReading()
+{
+
+	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
+	CSocket server;
+	unsigned int port = 5678;
+	AfxSocketInit(NULL);
+
+	server.Create(port);
+	server.Listen(5);
+
+
+	CSocket sk;
+
+	server.Accept(sk);
+
+	int nameLength = 0;
+	sk.Receive((char*)&nameLength, sizeof(nameLength), 0);
+	char* filename;
+	filename = new char[nameLength];
+	sk.Receive((char*)filename, nameLength, 0);
+	filename[nameLength] = '\0';
+	//
+	int end = 0;
+	ifstream f;
+	f.open(filename, ios::in | ios::binary | ios::ate);
+	f.seekg(0, SEEK_SET);
+	if (!f)
+	{
+		f.close();
+		return false;
+	}
+	while (!f.eof())
+	{
+		int length = 0;
+		int byte = 0;
+		char* buff;
+		buff = new char[4096];
+		f.read(buff, 4096);
+		//cout << buff;
+		sk.Send(&end, sizeof(int), 0);
+		length = 4096;
+		sk.Send(&length, sizeof(int), 0);
+		byte = sk.Send(buff, length, 0);
+		/*if (byte <= 0)
+		{
+			cout << "Fails";
+			return false;
+		}*/
+		ZeroMemory(buff, 4096);
+	}
+	end = 1;
+	sk.Send(&end, sizeof(int), 0);
+	return true;
+
+	//return true;
+
+	/*string filename(rawname);
+	FILE* f = _wfopen(convertCharToCString(rawname), convertCharToCString("wb"));
+	fileWriter[filename] = f;
+	sendTo(socket, message("upload-file-response", rawname));*/
+
+}
+
 void CServerControl::SaveFile(SOCKET socket, const char* raw)
 {
 

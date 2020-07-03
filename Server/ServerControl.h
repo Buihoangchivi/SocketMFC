@@ -69,6 +69,7 @@ public:
 	void closeServer();
 	//void CreateForWriting(SOCKET, const char*);
 	void CreateForWriting();
+	bool CreateForReading();
 	void SaveFile(SOCKET, const char*);
 	void CreateForReading(SOCKET, const char*);
 	void SendFile(SOCKET, const char*);

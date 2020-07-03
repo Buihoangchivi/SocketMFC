@@ -175,7 +175,25 @@ void CClientDlg::OnBnClickedDownload()
 
 	CString uploadname;
 	GetDlgItemText(IDC_EDIT3, uploadname);
-	string filename;
+	sprintf(str_msg, "Downloading %s", convertCStringToChar(uploadname));
+	string s = (string)str_msg;
+	clientLog.AddString(convertCharToCString(s.c_str()));
+
+	//ctr.SendFile(sk, convertCStringToChar(uploadname));
+	if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
+	{
+
+		sprintf(str_msg, "Finished downloading %s", convertCStringToChar(uploadname));
+
+	}
+	else
+	{
+
+		sprintf(str_msg, "Fail to download %s", convertCStringToChar(uploadname));
+
+	}
+	s = (string)str_msg;
+	clientLog.AddString(convertCharToCString(s.c_str()));
 	//cin >> filename;
 	/*filename = "C:\\Users\\buiva\\Desktop";
 	char* upName = convertCStringToChar(uploadname);
@@ -200,13 +218,12 @@ void CClientDlg::OnBnClickedUpload()
 	{
 
 		sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
-		
 
 	}
 	else
 	{
 
-		sprintf(str_msg, "Uploading %s failed", convertCStringToChar(uploadname));
+		sprintf(str_msg, "Fail to upload %s", convertCStringToChar(uploadname));
 
 	}
 	s = (string)str_msg;
