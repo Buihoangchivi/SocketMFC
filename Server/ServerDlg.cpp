@@ -7,6 +7,7 @@
 #include "Server.h"
 #include "ServerDlg.h"
 #include "afxdialogex.h"
+#include <iostream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -239,6 +240,16 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 
 			string response = control.cancelAccount(msg->content, userLog);
 			serverLog.AddString(convertCharToCString(response.c_str()));
+
+		}
+		if (strcmp("get-server-path", msg->action) == 0)
+		{
+
+			TCHAR defaultDir[200];
+			GetCurrentDirectory(200, defaultDir);
+			//serverLog.AddString(defaultDir);//convertCharToCString(response.c_str()));
+			//serverLog.AddString((TCHAR*)msg->content);
+			sendTo(socket, message("get-server-path-response", (char*)defaultDir, sizeof defaultDir));
 
 		}
 		delete msg;

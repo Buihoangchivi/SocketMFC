@@ -174,28 +174,38 @@ void CClientDlg::OnBnClickedDownload()
 {
 
 	CString uploadname;
-	GetDlgItemText(IDC_EDIT3, uploadname);
-	SOCKET temp = sk;
-	sprintf(str_msg, "Downloading %s", convertCStringToChar(uploadname));
-	sk = temp;
-	string s = (string)str_msg;
-	clientLog.AddString(convertCharToCString(s.c_str()));
-
-	//ctr.SendFile(sk, convertCStringToChar(uploadname));
-	if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
+	//GetDlgItemText(IDC_EDIT3, uploadname);
+	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
+	//= AfxGetApp()->GetProfileStringW(_T("Local AppWizard-Generated Applications"), _T("Path"));
+	//dlg.m_ofn.lpstrInitialDir = L"D:\\Chau";
+	dlg.m_ofn.lpstrInitialDir = defaultDir;
+	if (dlg.DoModal() == IDOK)
 	{
 
-		sprintf(str_msg, "Finished downloading %s", convertCStringToChar(uploadname));
+		uploadname = dlg.GetPathName();
+		SOCKET temp = sk;
+		sprintf(str_msg, "Downloading %s", convertCStringToChar(uploadname));
+		sk = temp;
+		string s = (string)str_msg;
+		clientLog.AddString(convertCharToCString(s.c_str()));
+
+		//ctr.SendFile(sk, convertCStringToChar(uploadname));
+		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
+		{
+
+			sprintf(str_msg, "Finished downloading %s", convertCStringToChar(uploadname));
+
+		}
+		else
+		{
+
+			sprintf(str_msg, "Fail to download %s", convertCStringToChar(uploadname));
+
+		}
+		s = (string)str_msg;
+		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
-	else
-	{
-
-		sprintf(str_msg, "Fail to download %s", convertCStringToChar(uploadname));
-
-	}
-	s = (string)str_msg;
-	clientLog.AddString(convertCharToCString(s.c_str()));
 	//cin >> filename;
 	/*filename = "C:\\Users\\buiva\\Desktop";
 	char* upName = convertCStringToChar(uploadname);
@@ -208,30 +218,40 @@ void CClientDlg::OnBnClickedDownload()
 
 void CClientDlg::OnBnClickedUpload()
 {
-	
+
 	CString uploadname;
-	GetDlgItemText(IDC_EDIT3, uploadname);
-	SOCKET temp = sk;
-	sprintf(str_msg, "Uploading %s", convertCStringToChar(uploadname));
-	sk = temp;
-	string s = (string)str_msg;
-	clientLog.AddString(convertCharToCString(s.c_str()));
-
-	//ctr.SendFile(sk, convertCStringToChar(uploadname));
-	if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
+	//GetDlgItemText(IDC_EDIT3, uploadname);
+	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
+	TCHAR dir[200];
+	GetCurrentDirectory(200, dir);
+	dlg.m_ofn.lpstrInitialDir = dir;
+	if (dlg.DoModal() == IDOK)
 	{
 
-		sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+		uploadname = dlg.GetPathName();
+		SOCKET temp = sk;
+		sprintf(str_msg, "Uploading %s", convertCStringToChar(uploadname));
+		sk = temp;
+		string s = (string)str_msg;
+		clientLog.AddString(convertCharToCString(s.c_str()));
+
+		//ctr.SendFile(sk, convertCStringToChar(uploadname));
+		if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
+		{
+
+			sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+
+		}
+		else
+		{
+
+			sprintf(str_msg, "Fail to upload %s", convertCStringToChar(uploadname));
+
+		}
+		s = (string)str_msg;
+		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
-	else
-	{
-
-		sprintf(str_msg, "Fail to upload %s", convertCStringToChar(uploadname));
-
-	}
-	s = (string)str_msg;
-	clientLog.AddString(convertCharToCString(s.c_str()));
 	/*sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
 	s = (string)str_msg;
 	clientLog.AddString(convertCharToCString(s.c_str()));*/
@@ -299,6 +319,7 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 				sprintf(str_msg, "Login successfully.");
 				string s = (string)str_msg;
 				clientLog.AddString(convertCharToCString(s.c_str()));
+				sendTo(sk, message("get-server-path", ""));
 
 			}
 			else
@@ -379,6 +400,12 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 			else
 				clientLog.AddString(L"Fail to download file.");
 			f.close();
+
+		}
+		if (strcmp(msg->action, "get-server-path-response") == 0)
+		{
+
+			memcpy((char*)defaultDir, msg->content, sizeof defaultDir);
 
 		}
 		delete msg;
