@@ -66,7 +66,6 @@ BOOL CClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -125,6 +124,7 @@ void CClientDlg::connectToServer() {
 		}
 		isConnected = true;
 		WSAAsyncSelect(sk, m_hWnd, WM_USER + 1, FD_READ | FD_CLOSE);
+
 	}
 }
 
@@ -135,7 +135,7 @@ account CClientDlg::getAccountInfo()
 	CString password;
 	GetDlgItemText(IDC_EDIT1, username);
 	GetDlgItemText(IDC_EDIT2, password);
-
+	strcpy(this->ctr.username, convertCStringToChar(username));
 	account auth;
 	strcpy(auth.username, convertCStringToChar(username));
 	strcpy(auth.password, convertCStringToChar(password));
@@ -184,7 +184,7 @@ void CClientDlg::OnBnClickedDownload()
 
 		uploadname = dlg.GetPathName();
 		SOCKET temp = sk;
-		sprintf(str_msg, "Downloading %s", convertCStringToChar(uploadname));
+		sprintf(str_msg, "Downloading %s...", convertCStringToChar(uploadname));
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
@@ -193,13 +193,13 @@ void CClientDlg::OnBnClickedDownload()
 		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
 		{
 
-			sprintf(str_msg, "Finished downloading %s", convertCStringToChar(uploadname));
+			sprintf(str_msg, "Finished downloading %s.", convertCStringToChar(uploadname));
 
 		}
 		else
 		{
 
-			sprintf(str_msg, "Fail to download %s", convertCStringToChar(uploadname));
+			sprintf(str_msg, "Fail to download %s!", convertCStringToChar(uploadname));
 
 		}
 		s = (string)str_msg;
@@ -228,7 +228,7 @@ void CClientDlg::OnBnClickedUpload()
 
 		uploadname = dlg.GetPathName();
 		SOCKET temp = sk;
-		sprintf(str_msg, "Uploading %s", convertCStringToChar(uploadname));
+		sprintf(str_msg, "Uploading %s...", convertCStringToChar(uploadname));
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
@@ -237,13 +237,13 @@ void CClientDlg::OnBnClickedUpload()
 		if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
 		{
 
-			sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
+			sprintf(str_msg, "Finished uploading %s.", convertCStringToChar(uploadname));
 
 		}
 		else
 		{
 
-			sprintf(str_msg, "Fail to upload %s", convertCStringToChar(uploadname));
+			sprintf(str_msg, "Fail to upload %s!", convertCStringToChar(uploadname));
 
 		}
 		s = (string)str_msg;
@@ -348,6 +348,19 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 			clientLog.AddString(convertCharToCString(s.c_str()));
 
 		}
+		if (strcmp(msg->action, "client-upload") == 0)
+		{
+
+			PrintFileList();
+			clientLog.AddString(convertCharToCString(msg->content));
+
+		}
+		if (strcmp(msg->action, "client-download") == 0)
+		{
+
+			clientLog.AddString(convertCharToCString(msg->content));
+
+		}
 		if (strcmp(msg->action, "logout") == 0)
 		{
 
@@ -405,6 +418,7 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 		{
 
 			memcpy((char*)serverDir, msg->content, sizeof serverDir);
+			PrintFileList();
 
 		}
 		delete msg;
@@ -413,5 +427,40 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 	}
 	}
 	return 0;
+
+}
+
+void CClientDlg::PrintFileList()
+{
+
+	//Xoa man hinh cua fileListLog
+	while (fileListLog.GetCount() > 0)
+	{
+
+		fileListLog.DeleteString(0);
+
+	}
+	vector<string> a;
+	string path = (string)convertCStringToChar(serverDir);
+	path += "\\*";
+	WIN32_FIND_DATA data;
+	HANDLE hFind;
+	if ((hFind = FindFirstFile(convertCharToCString(path.c_str()), &data)) != INVALID_HANDLE_VALUE)
+	{
+
+		do
+		{
+
+			if (data.cFileName[0] != '.')
+			{
+
+				fileListLog.AddString(data.cFileName);
+
+			}
+
+		} while (FindNextFile(hFind, &data) != 0);
+		FindClose(hFind);
+
+	}
 
 }

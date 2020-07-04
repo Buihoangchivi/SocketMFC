@@ -43,7 +43,7 @@ protected:
 	bool isConnected;
 	SOCKET sk;
 	SOCKADDR_IN serverAddress;
-	char username[20];
+	char username[50];
 	TCHAR serverDir[200];
 	TCHAR clientDir[200];
 	account getAccountInfo();
@@ -58,6 +58,7 @@ public:
 	afx_msg void OnBnClickedUpload();
 	afx_msg void OnBnClickedLogout();
 	afx_msg void OnBnClickedCancel2();
+	void PrintFileList();
 	CButton signInButton;
 	CButton downLoadButton;
 	CButton upLoadButton;

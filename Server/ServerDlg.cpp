@@ -155,62 +155,17 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		if (strcmp("download-file", msg->action) == 0)
 		{
 
-			control.DownFile();
-
-			//	char fileName[100];
-			//	strcpy(fileName, msg->content);
-			//	//filename[nameLength] = '\0';
-			//	//
-			//	//int end = 0;
-			//	bool ok;
-			//	f.open(fileName, ios::in | ios::binary | ios::ate);
-			//	f.seekg(0, SEEK_SET);
-			//	if (!f)
-			//	{
-
-			//		f.close();
-			//		ok = false;
-			//		goto return_result;
-
-			//	}
-			//	
-			//	while (!f.eof())
-			//	{
-
-			//		//int length = 0;
-			//		//int byte = 0;
-			//		char* buff = new char[256];
-			//		f.read(buff, 255);
-			//		//cout << buff;
-			//		//tempClient->sk.Send(&end, sizeof(int), 0);
-			//		//length = 4096;
-			//		//tempClient->sk.Send(&length, sizeof(int), 0);
-			//		sendTo(socket, message("download-response", buff));
-			//		/*byte = tempClient->sk.Send(buff, length, 0);
-			//		if (byte <= 0)
-			//		{
-
-			//			ok = false;
-			//			goto return_result;
-
-			//		}*/
-			//		ZeroMemory(buff, 256);
-
-			//	}
-			//	//end = 1;
-			//	//tempClient->sk.Send(&end, sizeof(int), 0);
-			//	ok = true;
-
-			//return_result:
-			//	string response = control.sendResultDownloadFile(socket, ok);
-			//	serverLog.AddString(convertCharToCString(response.c_str()));
+			string response = control.DownFile(msg->content);
+			serverLog.AddString(convertCharToCString(response.c_str()));
 
 		}
 		if (strcmp("upload-file", msg->action) == 0)
 		{
 
 			//control.CreateForWriting(socket, msg->content);
-			control.UpFile();
+			//strcpy(username, msg->content);
+			string response = control.UpFile(msg->content);
+			serverLog.AddString(convertCharToCString(response.c_str()));
 			PrintFileList();
 
 		}

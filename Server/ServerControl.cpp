@@ -278,7 +278,7 @@ void CServerControl::closeServer()
 }
 
 //void CServerControl::CreateForWriting(SOCKET socket, const char* rawname)
-void CServerControl::UpFile()
+string CServerControl::UpFile(char* username)
 {
 
 	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
@@ -331,6 +331,11 @@ void CServerControl::UpFile()
 	sk.ShutDown(2); //Ngat ca chieu Gui va Nhan
 	sk.Close();
 	server.Close();
+
+	char str[200];
+	sprintf(str, "Username %s uploaded file %s.", username, filename1);
+	sendMessageToAllClient(message("client-upload", str));
+	return (string)str;
 	//return true;
 
 	/*string filename(rawname);
@@ -340,7 +345,7 @@ void CServerControl::UpFile()
 
 }
 
-bool CServerControl::DownFile()
+string CServerControl::DownFile(char* username)
 {
 
 	//AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0);
@@ -372,8 +377,11 @@ bool CServerControl::DownFile()
 	f.seekg(0, SEEK_SET);
 	if (!f)
 	{
+
 		f.close();
-		return false;
+		string s = "Can't open file " + (string)filename1;
+		return s;
+
 	}
 	while (!f.eof())
 	{
@@ -409,7 +417,16 @@ bool CServerControl::DownFile()
 	}
 	end = 1;
 	sk.Send(&end, sizeof(int), 0);
-	return true;
+	
+
+	sk.ShutDown(2); //Ngat ca chieu Gui va Nhan
+	sk.Close();
+	server.Close();
+
+	char str[200];
+	sprintf(str, "Username %s downloaded file %s.", username, filename1);
+	sendMessageToAllClient(message("client-download", str));
+	return (string)str;
 
 	//return true;
 

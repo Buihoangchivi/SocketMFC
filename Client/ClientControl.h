@@ -14,8 +14,8 @@ typedef vector<CString> MessageList;
 struct account
 {
 
-    char username[25];
-    char password[25];
+    char username[50];
+    char password[50];
 
 };
 
@@ -50,7 +50,7 @@ private:
 
 public:
     SOCKET sk;
-    char username[20];
+    char username[50];
     void Initialize(const char*, CListBox*, CListBox*);
     bool Connect(HWND);
     void Disconnect();

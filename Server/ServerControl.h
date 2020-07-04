@@ -11,8 +11,8 @@ using namespace std;
 struct account
 {
 
-	char username[25];
-	char password[25];
+	char username[50];
+	char password[50];
 
 };
 
@@ -68,8 +68,8 @@ public:
 	string CServerControl::sendResultDownloadFile(SOCKET, bool);
 	void closeServer();
 	//void CreateForWriting(SOCKET, const char*);
-	void UpFile();
-	bool DownFile();
+	string UpFile(char*);
+	string DownFile(char*);
 	void SaveFile(SOCKET, const char*);
 	void CreateForReading(SOCKET, const char*);
 	void SendFile(SOCKET, const char*);

@@ -181,7 +181,7 @@ bool CClientControl::SendFile(SOCKET socket, const char* path)
 	//else
 	//{
 
-	sendTo(socket, message("upload-file", ""));
+	sendTo(socket, message("upload-file", username));
 	char sAdd[] = "127.0.0.1";
 	unsigned int port = 5678; //Cung port voi server
 	CSocket client;
@@ -287,7 +287,7 @@ bool CClientControl::ReceiveFile(SOCKET socket, const char* path)
 	//client.Create();
 	//client.Connect(CA2W(sAdd), port);
 
-	sendTo(socket, message("download-file", ""));
+	sendTo(socket, message("download-file", username));
 	char sAdd[] = "127.0.0.1";
 	unsigned int port = 5678; //Cung port voi server
 	CSocket client;
