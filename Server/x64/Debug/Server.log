@@ -1,6 +1,1 @@
-﻿  Server.cpp
-  ServerControl.cpp
-D:\Socket\Server\ServerControl.cpp(518,44): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  ServerDlg.cpp
-  Generating Code...
-  Server.vcxproj -> D:\Socket\x64\Debug\Server.exe
+﻿  Server.vcxproj -> D:\Socket\x64\Debug\Server.exe

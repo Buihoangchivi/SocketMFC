@@ -68,6 +68,7 @@ BOOL CServerDlg::OnInitDialog()
 		serverLog.AddString(L"Database file doesn't exist. Program has created a new empty database file.");
 
 	}
+	//Tao folder ten File chua cac file de cac client upload, download
 	_mkdir("File");
 	PrintFileList();
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -146,7 +147,6 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 
 				string response = control.authenticate(socket, *msg, userLog);
 				serverLog.AddString(convertCharToCString(response.c_str()));
-				//userLog.GetCount();
 
 			}
 			catch (int) {}
@@ -162,29 +162,9 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		if (strcmp("upload-file", msg->action) == 0)
 		{
 
-			//control.CreateForWriting(socket, msg->content);
-			//strcpy(username, msg->content);
 			string response = control.UpFile(msg->content);
 			serverLog.AddString(convertCharToCString(response.c_str()));
 			PrintFileList();
-
-		}
-		if (strcmp("upload-file-part", msg->action) == 0)
-		{
-
-			control.SaveFile(socket, msg->content);
-
-		}
-		if (strcmp("request-file", msg->action) == 0)
-		{
-
-			control.CreateForReading(socket, msg->content);
-
-		}
-		if (strcmp("request-file-part", msg->action) == 0)
-		{
-
-			control.SendFile(socket, msg->content);
 
 		}
 		if (strcmp("logout", msg->action) == 0)
@@ -212,9 +192,6 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 			char* temp = "\\File";
 			for (int j = 0; j <= strlen(temp); j++)
 				defaultDir[i + j] = temp[j];
-
-			//serverLog.AddString(defaultDir);//convertCharToCString(response.c_str()));
-			//serverLog.AddString((TCHAR*)msg->content);
 			sendTo(socket, message("get-server-path-response", (char*)defaultDir, sizeof defaultDir));
 
 		}
@@ -222,20 +199,6 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		break;
 
 	}
-	/*case FD_CLOSE:
-	{
-
-		try
-		{
-
-			string response = control.logoutAccount(socket, userLog);
-			serverLog.AddString(convertCharToCString(response.c_str()));
-
-		}
-		catch (int) {}
-		break;
-
-	}*/
 	}
 	return 0;
 

@@ -53,9 +53,8 @@ private:
 	SOCKET socdes;
 	CListBox* log;
 	vector<account> dataArray;
-	map<string, FILE*> fileWriter;
-	map<pair<string, SOCKET>, FILE*> fileReader;
 	void sendMessageToAllClient(message);
+
 public:
 	vector<CLIENT> clientArray;
 	bool listenConnection(HWND);
@@ -64,15 +63,9 @@ public:
 	string authenticate(SOCKET sk, message ms, CListBox& userLog);
 	string logoutAccount(const char* user, CListBox& userLog);
 	string cancelAccount(const char* user, CListBox& userLog);
-	//string CServerControl::sendResultDownloadFile(SOCKET, const char*, bool);
-	string CServerControl::sendResultDownloadFile(SOCKET, bool);
 	void closeServer();
-	//void CreateForWriting(SOCKET, const char*);
 	string UpFile(char*);
 	string DownFile(char*);
-	void SaveFile(SOCKET, const char*);
-	void CreateForReading(SOCKET, const char*);
-	void SendFile(SOCKET, const char*);
 
 };
 

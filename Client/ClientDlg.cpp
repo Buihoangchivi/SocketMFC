@@ -36,7 +36,6 @@ void CClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT1, userText);
 	DDX_Control(pDX, IDC_EDIT2, passwordText);
 	DDX_Control(pDX, IDC_LIST1, clientLog);
-	DDX_Control(pDX, IDC_LIST2, userListLog);
 	DDX_Control(pDX, IDC_LIST3, fileListLog);
 	DDX_Control(pDX, IDC_EDIT3, textBox);
 }
@@ -174,10 +173,7 @@ void CClientDlg::OnBnClickedDownload()
 {
 
 	CString uploadname;
-	//GetDlgItemText(IDC_EDIT3, uploadname);
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
-	//= AfxGetApp()->GetProfileStringW(_T("Local AppWizard-Generated Applications"), _T("Path"));
-	//dlg.m_ofn.lpstrInitialDir = L"D:\\Chau";
 	dlg.m_ofn.lpstrInitialDir = serverDir;
 	if (dlg.DoModal() == IDOK)
 	{
@@ -188,8 +184,6 @@ void CClientDlg::OnBnClickedDownload()
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
-
-		//ctr.SendFile(sk, convertCStringToChar(uploadname));
 		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
 		{
 
@@ -206,12 +200,6 @@ void CClientDlg::OnBnClickedDownload()
 		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
-	//cin >> filename;
-	/*filename = "C:\\Users\\buiva\\Desktop";
-	char* upName = convertCStringToChar(uploadname);
-	upName[strlen(upName)] = '\0';
-	sendTo(sk, message("download", upName));
-	f.open(filename, ios::out | ios::binary);*/
 
 }
 
@@ -220,7 +208,6 @@ void CClientDlg::OnBnClickedUpload()
 {
 
 	CString uploadname;
-	//GetDlgItemText(IDC_EDIT3, uploadname);
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
 	dlg.m_ofn.lpstrInitialDir = clientDir;
 	if (dlg.DoModal() == IDOK)
@@ -232,8 +219,6 @@ void CClientDlg::OnBnClickedUpload()
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
-
-		//ctr.SendFile(sk, convertCStringToChar(uploadname));
 		if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
 		{
 
@@ -250,9 +235,6 @@ void CClientDlg::OnBnClickedUpload()
 		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
-	/*sprintf(str_msg, "Finished uploading %s", convertCStringToChar(uploadname));
-	s = (string)str_msg;
-	clientLog.AddString(convertCharToCString(s.c_str()));*/
 
 }
 
@@ -307,7 +289,6 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 				this->userText.ShowWindow(SW_HIDE);
 				this->passwordText.ShowWindow(SW_HIDE);
 				this->clientLog.ShowWindow(SW_SHOW);
-				this->userListLog.ShowWindow(SW_SHOW);
 				this->fileListLog.ShowWindow(SW_SHOW);
 				this->textBox.ShowWindow(SW_SHOW);
 				this->downLoadButton.ShowWindow(SW_SHOW);
@@ -385,33 +366,6 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 			CClientDlg dlg;
 			EndDialog(0);
 			dlg.DoModal();
-
-		}
-		if (strcmp(msg->action, "upload-file-response") == 0) {
-			ctr.SendFilePart(msg->content);
-		}
-		if (strcmp(msg->action, "request-file-response") == 0) {
-			//ctr.ReceiveFilePart(msg->content);
-		}
-		if (strcmp(msg->action, "download-response") == 0)
-		{
-
-			/*char* buff = new char[524];
-			strcpy(buff, msg->content);
-			f.write(buff, strlen(buff));
-			ZeroMemory(buff, strlen(buff));*/
-			/*f.write(msg->content, strlen(msg->content));
-			ZeroMemory(msg->content, strlen(msg->content));*/
-
-		}
-		if (strcmp(msg->action, "stop-download") == 0)
-		{
-
-			if (strcmp(msg->content, "1") == 0)
-				clientLog.AddString(L"Download successfully.");
-			else
-				clientLog.AddString(L"Fail to download file.");
-			f.close();
 
 		}
 		if (strcmp(msg->action, "get-server-path-response") == 0)
