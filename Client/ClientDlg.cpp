@@ -178,7 +178,7 @@ void CClientDlg::OnBnClickedDownload()
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
 	//= AfxGetApp()->GetProfileStringW(_T("Local AppWizard-Generated Applications"), _T("Path"));
 	//dlg.m_ofn.lpstrInitialDir = L"D:\\Chau";
-	dlg.m_ofn.lpstrInitialDir = defaultDir;
+	dlg.m_ofn.lpstrInitialDir = serverDir;
 	if (dlg.DoModal() == IDOK)
 	{
 
@@ -222,9 +222,7 @@ void CClientDlg::OnBnClickedUpload()
 	CString uploadname;
 	//GetDlgItemText(IDC_EDIT3, uploadname);
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
-	TCHAR dir[200];
-	GetCurrentDirectory(200, dir);
-	dlg.m_ofn.lpstrInitialDir = dir;
+	dlg.m_ofn.lpstrInitialDir = clientDir;
 	if (dlg.DoModal() == IDOK)
 	{
 
@@ -320,6 +318,7 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 				string s = (string)str_msg;
 				clientLog.AddString(convertCharToCString(s.c_str()));
 				sendTo(sk, message("get-server-path", ""));
+				GetCurrentDirectory(200, clientDir);
 
 			}
 			else
@@ -405,7 +404,7 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 		if (strcmp(msg->action, "get-server-path-response") == 0)
 		{
 
-			memcpy((char*)defaultDir, msg->content, sizeof defaultDir);
+			memcpy((char*)serverDir, msg->content, sizeof serverDir);
 
 		}
 		delete msg;

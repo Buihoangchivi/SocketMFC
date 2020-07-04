@@ -288,7 +288,7 @@ void CServerControl::UpFile()
 
 	server.Create(port);
 	server.Listen(5);
-	
+
 
 	CSocket sk;
 
@@ -297,29 +297,32 @@ void CServerControl::UpFile()
 	//memcpy((char*)&sk, r, sizeof CSocket);
 	int nameLength = 0;
 	sk.Receive((char*)&nameLength, sizeof(nameLength), 0);
-	char* filename;
-	filename = new char[nameLength];
-	sk.Receive((char*)filename, nameLength, 0);
-	filename[nameLength] = '\0';
+	char* filename1;
+	filename1 = new char[nameLength];
+	sk.Receive((char*)filename1, nameLength, 0);
+	filename1[nameLength] = '\0';
+	string s = "File\\";
+	char filename[200];
+	strcpy(filename, (char*)(s + (string)filename1).c_str());
 	ofstream f;
 	f.open(filename, ios::out | ios::binary);
 	int end = 0;
 	while (true)
 	{
-		
+
 		sk.Receive((char*)&end, sizeof(end), 0);
 		if (end == 1)
 		{
 
 			break;
-			
+
 		}
 		int length = 0;
 		sk.Receive((char*)&length, sizeof(length), 0);
 		char* buff;
 		buff = new char[length];
 		sk.Receive((char*)buff, length, 0);
-		
+
 		f.write(buff, length);
 		ZeroMemory(buff, length);
 
@@ -355,10 +358,13 @@ bool CServerControl::DownFile()
 
 	int nameLength = 0;
 	sk.Receive((char*)&nameLength, sizeof(nameLength), 0);
-	char* filename;
-	filename = new char[nameLength];
-	sk.Receive((char*)filename, nameLength, 0);
-	filename[nameLength] = '\0';
+	char* filename1;
+	filename1 = new char[nameLength];
+	sk.Receive((char*)filename1, nameLength, 0);
+	filename1[nameLength] = '\0';
+	string s = "File\\";
+	char filename[200];
+	strcpy(filename, (char*)(s + (string)filename1).c_str());
 	//
 	int end = 0;
 	ifstream f;

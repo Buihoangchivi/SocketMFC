@@ -38,7 +38,9 @@ protected:
 public:
 	afx_msg void OnBnClickedListen();
 	afx_msg void OnBnClickedCancel();
+	void PrintFileList();
 	CListBox serverLog;
 	CListBox userLog;
 	CButton listenButton;
+	CListBox fileListLog;
 };

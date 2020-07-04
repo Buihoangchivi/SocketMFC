@@ -8,6 +8,7 @@
 #include "ServerDlg.h"
 #include "afxdialogex.h"
 #include <iostream>
+#include <direct.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,6 +33,7 @@ void CServerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, serverLog);
 	DDX_Control(pDX, IDC_LIST2, userLog);
 	DDX_Control(pDX, IDLISTEN, listenButton);
+	DDX_Control(pDX, IDC_LIST3, fileListLog);
 }
 
 BEGIN_MESSAGE_MAP(CServerDlg, CDialogEx)
@@ -66,7 +68,8 @@ BOOL CServerDlg::OnInitDialog()
 		serverLog.AddString(L"Database file doesn't exist. Program has created a new empty database file.");
 
 	}
-
+	_mkdir("File");
+	PrintFileList();
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -154,53 +157,53 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 
 			control.DownFile();
 
-		//	char fileName[100];
-		//	strcpy(fileName, msg->content);
-		//	//filename[nameLength] = '\0';
-		//	//
-		//	//int end = 0;
-		//	bool ok;
-		//	f.open(fileName, ios::in | ios::binary | ios::ate);
-		//	f.seekg(0, SEEK_SET);
-		//	if (!f)
-		//	{
+			//	char fileName[100];
+			//	strcpy(fileName, msg->content);
+			//	//filename[nameLength] = '\0';
+			//	//
+			//	//int end = 0;
+			//	bool ok;
+			//	f.open(fileName, ios::in | ios::binary | ios::ate);
+			//	f.seekg(0, SEEK_SET);
+			//	if (!f)
+			//	{
 
-		//		f.close();
-		//		ok = false;
-		//		goto return_result;
+			//		f.close();
+			//		ok = false;
+			//		goto return_result;
 
-		//	}
-		//	
-		//	while (!f.eof())
-		//	{
+			//	}
+			//	
+			//	while (!f.eof())
+			//	{
 
-		//		//int length = 0;
-		//		//int byte = 0;
-		//		char* buff = new char[256];
-		//		f.read(buff, 255);
-		//		//cout << buff;
-		//		//tempClient->sk.Send(&end, sizeof(int), 0);
-		//		//length = 4096;
-		//		//tempClient->sk.Send(&length, sizeof(int), 0);
-		//		sendTo(socket, message("download-response", buff));
-		//		/*byte = tempClient->sk.Send(buff, length, 0);
-		//		if (byte <= 0)
-		//		{
+			//		//int length = 0;
+			//		//int byte = 0;
+			//		char* buff = new char[256];
+			//		f.read(buff, 255);
+			//		//cout << buff;
+			//		//tempClient->sk.Send(&end, sizeof(int), 0);
+			//		//length = 4096;
+			//		//tempClient->sk.Send(&length, sizeof(int), 0);
+			//		sendTo(socket, message("download-response", buff));
+			//		/*byte = tempClient->sk.Send(buff, length, 0);
+			//		if (byte <= 0)
+			//		{
 
-		//			ok = false;
-		//			goto return_result;
+			//			ok = false;
+			//			goto return_result;
 
-		//		}*/
-		//		ZeroMemory(buff, 256);
+			//		}*/
+			//		ZeroMemory(buff, 256);
 
-		//	}
-		//	//end = 1;
-		//	//tempClient->sk.Send(&end, sizeof(int), 0);
-		//	ok = true;
+			//	}
+			//	//end = 1;
+			//	//tempClient->sk.Send(&end, sizeof(int), 0);
+			//	ok = true;
 
-		//return_result:
-		//	string response = control.sendResultDownloadFile(socket, ok);
-		//	serverLog.AddString(convertCharToCString(response.c_str()));
+			//return_result:
+			//	string response = control.sendResultDownloadFile(socket, ok);
+			//	serverLog.AddString(convertCharToCString(response.c_str()));
 
 		}
 		if (strcmp("upload-file", msg->action) == 0)
@@ -208,6 +211,7 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 
 			//control.CreateForWriting(socket, msg->content);
 			control.UpFile();
+			PrintFileList();
 
 		}
 		if (strcmp("upload-file-part", msg->action) == 0)
@@ -247,6 +251,13 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 
 			TCHAR defaultDir[200];
 			GetCurrentDirectory(200, defaultDir);
+			int i = 0;
+			while (defaultDir[i] != '\0')
+				i++;
+			char* temp = "\\File";
+			for (int j = 0; j <= strlen(temp); j++)
+				defaultDir[i + j] = temp[j];
+
 			//serverLog.AddString(defaultDir);//convertCharToCString(response.c_str()));
 			//serverLog.AddString((TCHAR*)msg->content);
 			sendTo(socket, message("get-server-path-response", (char*)defaultDir, sizeof defaultDir));
@@ -301,5 +312,39 @@ void CServerDlg::OnBnClickedCancel()
 
 	control.closeServer();
 	CDialogEx::OnCancel();
+
+}
+
+void CServerDlg::PrintFileList()
+{
+
+	//Xoa man hinh cua fileListLog
+	while (fileListLog.GetCount() > 0)
+	{
+
+		fileListLog.DeleteString(0);
+
+	}
+	vector<string> a;
+	string path = ".\\File\\*";
+	WIN32_FIND_DATA data;
+	HANDLE hFind;
+	if ((hFind = FindFirstFile(convertCharToCString(path.c_str()), &data)) != INVALID_HANDLE_VALUE)
+	{
+
+		do
+		{
+
+			if (data.cFileName[0] != '.')
+			{
+
+				fileListLog.AddString(data.cFileName);
+
+			}
+
+		} while (FindNextFile(hFind, &data) != 0);
+		FindClose(hFind);
+
+	}
 
 }

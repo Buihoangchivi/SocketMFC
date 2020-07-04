@@ -44,7 +44,8 @@ protected:
 	SOCKET sk;
 	SOCKADDR_IN serverAddress;
 	char username[20];
-	TCHAR defaultDir[200];
+	TCHAR serverDir[200];
+	TCHAR clientDir[200];
 	account getAccountInfo();
 	void connectToServer();
 	ofstream f;
