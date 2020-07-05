@@ -177,36 +177,37 @@ void CClientDlg::OnBnClickedDownload()
 	if (dlg.DoModal() == IDOK)
 	{
 
-		bool check = true;
 		CFileDialog dlg1(FALSE, nullptr, nullptr, OFN_EXPLORER | OFN_HIDEREADONLY, nullptr);
 		dlg1.m_ofn.lpstrInitialDir = clientDir;
 		if (dlg1.DoModal() == IDOK)
 		{
 
 			downloadPath = dlg1.GetPathName();
-			check = false;
+			uploadname = dlg.GetPathName();
+			SOCKET temp = sk;
+			sprintf(str_msg, "Downloading %s...", convertCStringToChar(uploadname));
+			sk = temp;
+			string s = (string)str_msg;
+			clientLog.AddString(L">>");
+			clientLog.AddString(convertCharToCString(s.c_str()));
+			if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname), convertCStringToChar(downloadPath)))
+			{
+
+				sprintf(str_msg, "Finished downloading %s.", convertCStringToChar(uploadname));
+
+			}
+			else
+			{
+
+				sprintf(str_msg, "Fail to download %s!", convertCStringToChar(uploadname));
+
+			}
+			s = (string)str_msg;
+			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
-		uploadname = dlg.GetPathName();
-		SOCKET temp = sk;
-		sprintf(str_msg, "Downloading %s...", convertCStringToChar(uploadname));
-		sk = temp;
-		string s = (string)str_msg;
-		clientLog.AddString(convertCharToCString(s.c_str()));
-		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname), check, convertCStringToChar(downloadPath)))
-		{
-
-			sprintf(str_msg, "Finished downloading %s.", convertCStringToChar(uploadname));
-
-		}
-		else
-		{
-
-			sprintf(str_msg, "Fail to download %s!", convertCStringToChar(uploadname));
-
-		}
-		s = (string)str_msg;
-		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
 
@@ -222,36 +223,37 @@ void CClientDlg::OnBnClickedUpload()
 	if (dlg.DoModal() == IDOK)
 	{
 
-		bool check = true;
 		CFileDialog dlg1(FALSE, nullptr, nullptr, OFN_EXPLORER | OFN_HIDEREADONLY, nullptr);
 		dlg1.m_ofn.lpstrInitialDir = serverDir;
 		if (dlg1.DoModal() == IDOK)
 		{
 
 			uploadPath = dlg1.GetPathName();
-			check = false;
+			uploadname = dlg.GetPathName();
+			SOCKET temp = sk;
+			sprintf(str_msg, "Uploading %s...", convertCStringToChar(uploadname));
+			sk = temp;
+			string s = (string)str_msg;
+			clientLog.AddString(L">>");
+			clientLog.AddString(convertCharToCString(s.c_str()));
+			if (ctr.SendFile(sk, convertCStringToChar(uploadname), convertCStringToChar(uploadPath)))
+			{
+
+				sprintf(str_msg, "Finished uploading %s.", convertCStringToChar(uploadname));
+
+			}
+			else
+			{
+
+				sprintf(str_msg, "Fail to upload %s!", convertCStringToChar(uploadname));
+
+			}
+			s = (string)str_msg;
+			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
-		uploadname = dlg.GetPathName();
-		SOCKET temp = sk;
-		sprintf(str_msg, "Uploading %s...", convertCStringToChar(uploadname));
-		sk = temp;
-		string s = (string)str_msg;
-		clientLog.AddString(convertCharToCString(s.c_str()));
-		if (ctr.SendFile(sk, convertCStringToChar(uploadname), check, convertCStringToChar(uploadPath)))
-		{
-
-			sprintf(str_msg, "Finished uploading %s.", convertCStringToChar(uploadname));
-
-		}
-		else
-		{
-
-			sprintf(str_msg, "Fail to upload %s!", convertCStringToChar(uploadname));
-
-		}
-		s = (string)str_msg;
-		clientLog.AddString(convertCharToCString(s.c_str()));
 
 	}
 
@@ -315,7 +317,10 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 				this->cancelButton2.ShowWindow(SW_SHOW);
 				sprintf(str_msg, "Login successfully.");
 				string s = (string)str_msg;
+				clientLog.AddString(L">>");
 				clientLog.AddString(convertCharToCString(s.c_str()));
+				//In 1 dong trong de co the de doc lich su thao tac giua client va server
+				clientLog.AddString(L"");
 				sendTo(sk, message("get-server-path", ""));
 				GetCurrentDirectory(200, clientDir);
 
@@ -325,7 +330,10 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 
 				sprintf(str_msg, "Fail to login.");
 				string s = (string)str_msg;
+				clientLog.AddString(L">>");
 				clientLog.AddString(convertCharToCString(s.c_str()));
+				//In 1 dong trong de co the de doc lich su thao tac giua client va server
+				clientLog.AddString(L"");
 				MessageBox(CString(msg->content));
 
 			}
@@ -336,7 +344,10 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 
 			sprintf(str_msg, "New user %s registered.", msg->content);
 			string s = (string)str_msg;
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "new-login") == 0)
@@ -344,20 +355,29 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 
 			sprintf(str_msg, "User %s logged in.", msg->content);
 			string s = (string)str_msg;
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "client-upload") == 0)
 		{
 
 			PrintFileList();
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(msg->content));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "client-download") == 0)
 		{
 
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(msg->content));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "logout") == 0)
@@ -365,7 +385,10 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 
 			sprintf(str_msg, "User %s logged out.", msg->content);
 			string s = (string)str_msg;
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "cancel") == 0)
@@ -373,7 +396,10 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 
 			sprintf(str_msg, "User %s canceled.", msg->content);
 			string s = (string)str_msg;
+			clientLog.AddString(L">>");
 			clientLog.AddString(convertCharToCString(s.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			clientLog.AddString(L"");
 
 		}
 		if (strcmp(msg->action, "close-server") == 0)

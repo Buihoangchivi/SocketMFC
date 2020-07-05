@@ -400,13 +400,17 @@ string CServerControl::DownFile(char* username)
 	end = 1;
 	sk.Send(&end, sizeof(int), 0);
 	
+	sk.Receive((char*)&nameLength, sizeof(nameLength), 0);
+	char* filename2 = new char[nameLength];
+	sk.Receive((char*)filename2, nameLength, 0);
+	filename2[nameLength] = '\0';
 
 	sk.ShutDown(2); //Ngat ca chieu Gui va Nhan
 	sk.Close();
 	server.Close();
 
 	char str[200];
-	sprintf(str, "Username %s downloaded file %s.", username, filename1);
+	sprintf(str, "Username %s downloaded file %s.", username, filename2);
 	sendMessageToAllClient(message("client-download", str));
 	return (string)str;
 

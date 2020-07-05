@@ -59,13 +59,19 @@ BOOL CServerDlg::OnInitDialog()
 	if (control.collectDataFromDatabase())
 	{
 
+		serverLog.AddString(L">>");
 		serverLog.AddString(L"Server connected to database.");
+		//In 1 dong trong de co the de doc lich su thao tac giua client va server
+		serverLog.AddString(L"");
 
 	}
 	else
 	{
 
+		serverLog.AddString(L">>");
 		serverLog.AddString(L"Database file doesn't exist. Program has created a new empty database file.");
+		//In 1 dong trong de co the de doc lich su thao tac giua client va server
+		serverLog.AddString(L"");
 
 	}
 	//Tao folder ten File chua cac file de cac client upload, download
@@ -145,8 +151,11 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 			try
 			{
 
+				serverLog.AddString(L">>");
 				string response = control.authenticate(socket, *msg, userLog);
 				serverLog.AddString(convertCharToCString(response.c_str()));
+				//In 1 dong trong de co the de doc lich su thao tac giua client va server
+				serverLog.AddString(L"");
 
 			}
 			catch (int) {}
@@ -155,30 +164,42 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 		if (strcmp("download-file", msg->action) == 0)
 		{
 
+			serverLog.AddString(L">>");
 			string response = control.DownFile(msg->content);
 			serverLog.AddString(convertCharToCString(response.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			serverLog.AddString(L"");
 
 		}
 		if (strcmp("upload-file", msg->action) == 0)
 		{
 
+			serverLog.AddString(L">>");
 			string response = control.UpFile(msg->content);
 			serverLog.AddString(convertCharToCString(response.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			serverLog.AddString(L"");
 			PrintFileList();
 
 		}
 		if (strcmp("logout", msg->action) == 0)
 		{
 
+			serverLog.AddString(L">>");
 			string response = control.logoutAccount(msg->content, userLog);
 			serverLog.AddString(convertCharToCString(response.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			serverLog.AddString(L"");
 
 		}
 		if (strcmp("cancel", msg->action) == 0)
 		{
 
+			serverLog.AddString(L">>");
 			string response = control.cancelAccount(msg->content, userLog);
 			serverLog.AddString(convertCharToCString(response.c_str()));
+			//In 1 dong trong de co the de doc lich su thao tac giua client va server
+			serverLog.AddString(L"");
 
 		}
 		if (strcmp("get-server-path", msg->action) == 0)
@@ -210,15 +231,21 @@ void CServerDlg::OnBnClickedListen()
 	if (control.listenConnection(m_hWnd))
 	{
 
+		serverLog.AddString(L">>");
 		serverLog.AddString(L"Established connection successfully.");
 		serverLog.AddString(L"Server is listening connection from client...");
+		//In 1 dong trong de co the de doc lich su thao tac giua client va server
+		serverLog.AddString(L"");
 		this->listenButton.EnableWindow(FALSE);
 
 	}
 	else
 	{
 
+		serverLog.AddString(L">>");
 		serverLog.AddString(L"Failed to establish connection.");
+		//In 1 dong trong de co the de doc lich su thao tac giua client va server
+		serverLog.AddString(L"");
 
 	}
 

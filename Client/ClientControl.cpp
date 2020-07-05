@@ -74,7 +74,7 @@ void CClientControl::Disconnect()
 
 }
 
-bool CClientControl::SendFile(SOCKET socket, const char* path, bool check, char* uploadPath)
+bool CClientControl::SendFile(SOCKET socket, const char* path, char* uploadPath)
 {
 
 	sendTo(socket, message("upload-file", username));
@@ -85,49 +85,26 @@ bool CClientControl::SendFile(SOCKET socket, const char* path, bool check, char*
 	client.Create();
 	client.Connect(CA2W(sAdd), port);
 	string filename = (string)path;
-	if (check)
+	string uploadname(getFileName((string)uploadPath));
+	int nameLength = uploadname.size();
+	char* upName;
+	upName = new char[nameLength];
+	for (int i = 0; i < nameLength; i++)
 	{
 
-		string uploadname(getFileName(filename));
-		int nameLength = uploadname.size();
-		char* upName;
-		upName = new char[nameLength];
-		for (int i = 0; i < nameLength; i++)
-		{
-
-			upName[i] = uploadname[i];
-
-		}
-		upName[nameLength] = '\0';
-		client.Send(&nameLength, sizeof(int), 0);
-		client.Send(upName, nameLength, 0);
+		upName[i] = uploadname[i];
 
 	}
-	else
-	{
-
-		string uploadname(getFileName((string)uploadPath));
-		int nameLength = uploadname.size();
-		char* upName;
-		upName = new char[nameLength];
-		for (int i = 0; i < nameLength; i++)
-		{
-
-			upName[i] = uploadname[i];
-
-		}
-		upName[nameLength] = '\0';
-		client.Send(&nameLength, sizeof(int), 0);
-		client.Send(upName, nameLength, 0);
-
-	}
+	upName[nameLength] = '\0';
+	client.Send(&nameLength, sizeof(int), 0);
+	client.Send(upName, nameLength, 0);
 	int end = 0;
 	ifstream f;
 	f.open(filename, ios::in | ios::binary | ios::ate);
 	f.seekg(0, SEEK_SET);
 	if (!f)
 	{
-		
+
 		return false;
 
 	}
@@ -166,7 +143,7 @@ bool CClientControl::SendFile(SOCKET socket, const char* path, bool check, char*
 
 }
 
-bool CClientControl::ReceiveFile(SOCKET socket, const char* path, bool check, char* downloadPath)
+bool CClientControl::ReceiveFile(SOCKET socket, const char* path, char* downloadPath)
 {
 
 	sendTo(socket, message("download-file", username));
@@ -191,18 +168,7 @@ bool CClientControl::ReceiveFile(SOCKET socket, const char* path, bool check, ch
 	client.Send(&nameLength, sizeof(int), 0);
 	client.Send(downName, nameLength, 0);
 	ofstream f;
-	if (check)
-	{
-
-		f.open(downName, ios::out | ios::binary);
-
-	}
-	else
-	{
-
-		f.open(downloadPath, ios::out | ios::binary);
-
-	}
+	f.open(downloadPath, ios::out | ios::binary);
 	int end = 0;
 	while (true)
 	{
@@ -224,6 +190,19 @@ bool CClientControl::ReceiveFile(SOCKET socket, const char* path, bool check, ch
 
 	}
 	f.close();
+	fileLink = (string)downloadPath;
+	string downloadname1(getFileName(fileLink));
+	nameLength = downloadname1.size();
+	char* downName1 = new char[nameLength];
+	for (int i = 0; i < nameLength; i++)
+	{
+
+		downName1[i] = downloadname1[i];
+
+	}
+	downName1[nameLength] = '\0';
+	client.Send(&nameLength, sizeof(int), 0);
+	client.Send(downName1, nameLength, 0);
 	return true;
 
 }
