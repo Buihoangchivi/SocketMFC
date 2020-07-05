@@ -37,7 +37,6 @@ void CClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT2, passwordText);
 	DDX_Control(pDX, IDC_LIST1, clientLog);
 	DDX_Control(pDX, IDC_LIST3, fileListLog);
-	DDX_Control(pDX, IDC_EDIT3, textBox);
 }
 
 BEGIN_MESSAGE_MAP(CClientDlg, CDialogEx)
@@ -172,19 +171,29 @@ void CClientDlg::OnBnClickedRegister()
 void CClientDlg::OnBnClickedDownload()
 {
 
-	CString uploadname;
+	CString uploadname, downloadPath;
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
 	dlg.m_ofn.lpstrInitialDir = serverDir;
 	if (dlg.DoModal() == IDOK)
 	{
 
+		bool check = true;
+		CFileDialog dlg1(FALSE, nullptr, nullptr, OFN_EXPLORER | OFN_HIDEREADONLY, nullptr);
+		dlg1.m_ofn.lpstrInitialDir = clientDir;
+		if (dlg1.DoModal() == IDOK)
+		{
+
+			downloadPath = dlg1.GetPathName();
+			check = false;
+
+		}
 		uploadname = dlg.GetPathName();
 		SOCKET temp = sk;
 		sprintf(str_msg, "Downloading %s...", convertCStringToChar(uploadname));
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
-		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname)))
+		if (ctr.ReceiveFile(sk, convertCStringToChar(uploadname), check, convertCStringToChar(downloadPath)))
 		{
 
 			sprintf(str_msg, "Finished downloading %s.", convertCStringToChar(uploadname));
@@ -207,19 +216,29 @@ void CClientDlg::OnBnClickedDownload()
 void CClientDlg::OnBnClickedUpload()
 {
 
-	CString uploadname;
+	CString uploadname, uploadPath;
 	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, nullptr);
 	dlg.m_ofn.lpstrInitialDir = clientDir;
 	if (dlg.DoModal() == IDOK)
 	{
 
+		bool check = true;
+		CFileDialog dlg1(FALSE, nullptr, nullptr, OFN_EXPLORER | OFN_HIDEREADONLY, nullptr);
+		dlg1.m_ofn.lpstrInitialDir = serverDir;
+		if (dlg1.DoModal() == IDOK)
+		{
+
+			uploadPath = dlg1.GetPathName();
+			check = false;
+
+		}
 		uploadname = dlg.GetPathName();
 		SOCKET temp = sk;
 		sprintf(str_msg, "Uploading %s...", convertCStringToChar(uploadname));
 		sk = temp;
 		string s = (string)str_msg;
 		clientLog.AddString(convertCharToCString(s.c_str()));
-		if (ctr.SendFile(sk, convertCStringToChar(uploadname)))
+		if (ctr.SendFile(sk, convertCStringToChar(uploadname), check, convertCStringToChar(uploadPath)))
 		{
 
 			sprintf(str_msg, "Finished uploading %s.", convertCStringToChar(uploadname));
@@ -290,7 +309,6 @@ LRESULT CClientDlg::eventsControl(WPARAM wParam, LPARAM lParam)
 				this->passwordText.ShowWindow(SW_HIDE);
 				this->clientLog.ShowWindow(SW_SHOW);
 				this->fileListLog.ShowWindow(SW_SHOW);
-				this->textBox.ShowWindow(SW_SHOW);
 				this->downLoadButton.ShowWindow(SW_SHOW);
 				this->upLoadButton.ShowWindow(SW_SHOW);
 				this->logOutButton.ShowWindow(SW_SHOW);

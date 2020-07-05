@@ -38,8 +38,8 @@ public:
     char username[50];
     bool Connect(HWND);
     void Disconnect();
-    bool SendFile(SOCKET, const char*);
-    bool ReceiveFile(SOCKET, const char*);
+    bool SendFile(SOCKET, const char*, bool, char*);
+    bool ReceiveFile(SOCKET, const char*, bool, char*);
  
 };
 

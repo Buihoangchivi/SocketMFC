@@ -70,7 +70,6 @@ public:
 	CEdit passwordText;
 	CListBox clientLog;
 	CListBox fileListLog;
-	CEdit textBox;
 	LRESULT eventsControl(WPARAM wParam, LPARAM lParam);
 
 };

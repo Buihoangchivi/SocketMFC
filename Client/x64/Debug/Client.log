@@ -1,2 +1,4 @@
-﻿  ClientDlg.cpp
+﻿  Client.cpp
+  ClientDlg.cpp
+  Generating Code...
   Client.vcxproj -> D:\Socket\x64\Debug\Client.exe

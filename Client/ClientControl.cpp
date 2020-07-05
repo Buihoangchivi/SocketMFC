@@ -74,7 +74,7 @@ void CClientControl::Disconnect()
 
 }
 
-bool CClientControl::SendFile(SOCKET socket, const char* path)
+bool CClientControl::SendFile(SOCKET socket, const char* path, bool check, char* uploadPath)
 {
 
 	sendTo(socket, message("upload-file", username));
@@ -85,19 +85,42 @@ bool CClientControl::SendFile(SOCKET socket, const char* path)
 	client.Create();
 	client.Connect(CA2W(sAdd), port);
 	string filename = (string)path;
-	string uploadname(getFileName(filename));
-	int nameLength = uploadname.size();
-	char* upName;
-	upName = new char[nameLength];
-	for (int i = 0; i < nameLength; i++)
+	if (check)
 	{
 
-		upName[i] = uploadname[i];
+		string uploadname(getFileName(filename));
+		int nameLength = uploadname.size();
+		char* upName;
+		upName = new char[nameLength];
+		for (int i = 0; i < nameLength; i++)
+		{
+
+			upName[i] = uploadname[i];
+
+		}
+		upName[nameLength] = '\0';
+		client.Send(&nameLength, sizeof(int), 0);
+		client.Send(upName, nameLength, 0);
 
 	}
-	upName[nameLength] = '\0';
-	client.Send(&nameLength, sizeof(int), 0);
-	client.Send(upName, nameLength, 0);
+	else
+	{
+
+		string uploadname(getFileName((string)uploadPath));
+		int nameLength = uploadname.size();
+		char* upName;
+		upName = new char[nameLength];
+		for (int i = 0; i < nameLength; i++)
+		{
+
+			upName[i] = uploadname[i];
+
+		}
+		upName[nameLength] = '\0';
+		client.Send(&nameLength, sizeof(int), 0);
+		client.Send(upName, nameLength, 0);
+
+	}
 	int end = 0;
 	ifstream f;
 	f.open(filename, ios::in | ios::binary | ios::ate);
@@ -143,7 +166,7 @@ bool CClientControl::SendFile(SOCKET socket, const char* path)
 
 }
 
-bool CClientControl::ReceiveFile(SOCKET socket, const char* path)
+bool CClientControl::ReceiveFile(SOCKET socket, const char* path, bool check, char* downloadPath)
 {
 
 	sendTo(socket, message("download-file", username));
@@ -168,7 +191,18 @@ bool CClientControl::ReceiveFile(SOCKET socket, const char* path)
 	client.Send(&nameLength, sizeof(int), 0);
 	client.Send(downName, nameLength, 0);
 	ofstream f;
-	f.open(downName, ios::out | ios::binary);
+	if (check)
+	{
+
+		f.open(downName, ios::out | ios::binary);
+
+	}
+	else
+	{
+
+		f.open(downloadPath, ios::out | ios::binary);
+
+	}
 	int end = 0;
 	while (true)
 	{
