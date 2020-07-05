@@ -158,7 +158,15 @@ LRESULT CServerDlg::eventsControl(WPARAM socket, LPARAM lp)
 				serverLog.AddString(L"");
 
 			}
-			catch (int) {}
+			catch (int) 
+			{
+
+				string response = "Fail to login or register!!!";
+				serverLog.AddString(convertCharToCString(response.c_str()));
+				//In 1 dong trong de co the de doc lich su thao tac giua client va server
+				serverLog.AddString(L"");
+			
+			}
 
 		}
 		if (strcmp("download-file", msg->action) == 0)
